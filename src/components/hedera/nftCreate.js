@@ -1,75 +1,121 @@
-import axios from "axios";
-import { TokenCreateTransaction, PublicKey,TokenType,CustomRoyaltyFee,CustomFixedFee,Hbar,TokenSupplyType,PrivateKey} from "@hashgraph/sdk";
-    // PrivateKey,Client,TokenInfoQuery,TokenMintTransaction,
-	// TokenBurnTransaction,
-	// TransferTransaction,
-	// AccountBalanceQuery,
-	// AccountUpdateTransaction,
-	// TokenAssociateTransaction
-async function nfttokenCreateFcn(walletData, accountId) {
-	console.log(`\n=======================================`);
-	console.log(`- Creating NFT HTS token...`)
-	const hashconnect = walletData[0];
-	const saveData = walletData[1];
-	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
-	const signer = hashconnect.getSigner(provider);
+const {
+	AccountId,
+	PrivateKey,
+	Client,
+	TokenCreateTransaction,
+	TokenType,
+	TokenSupplyType,
+	TokenMintTransaction,
+	TransferTransaction,
+	AccountBalanceQuery,
+	TokenAssociateTransaction,
+} = require("@hashgraph/sdk");
 
-	const url = `https://testnet.mirrornode.hedera.com/api/v1/accounts?account.id=${accountId}`;
-	const mirrorQuery = await axios(url);
-	const supplyKey = PublicKey.fromString(mirrorQuery.data.accounts[0].key.key);
-	// const adminKey = PublicKey.fromString(mirrorQuery.data.accounts[0].key.key);
+// Configure accounts and client, and generate needed keys
+const operatorId = "0.0.49161691"
+const operatorKey = "302e020100300506032b657004220420bc74b4ad8c5148ef46d3f13509a8b6d2f37c81284fc2f9c4f8c3f436998bde4b"
+const treasuryId = "0.0.49161691"
+const treasuryKey = "302e020100300506032b657004220420bc74b4ad8c5148ef46d3f13509a8b6d2f37c81284fc2f9c4f8c3f436998bde4b"
+const aliceId = "0.0.49161120"
+const aliceKey = "302e020100300506032b657004220420bb9f6b9b3f41f7ffd53ce8f6ab2664541fb3afe88e68c513a1ed40c0ab57c3fa"
 
-    const adminKey = PrivateKey.generate();
-    // // const pauseKey = PrivateKey.generate();
-    // const freezeKey = PrivateKey.generate();
-    // const wipeKey = PrivateKey.generate();
+const client = Client.forTestnet().setOperator(operatorId, operatorKey);
 
-    let nftCustomFee = await new CustomRoyaltyFee()
-		.setNumerator(2.5)
-		.setDenominator(5)
-		.setFeeCollectorAccountId(accountId)
-		.setFallbackFee(new CustomFixedFee().setHbarAmount(new Hbar(1)));
-
-   const CID = [
-            // "https://oneto11.mypinata.cloud/ipfs/Qmf4LjUYuBPTtSHanL2rAJahuwksyqYD6NvJTZcsXoZPR4/1.json"
-            "Qmf4LjUYuBPTtSHanL2rAJahuwksyqYD6NvJTZcsXoZPR4"
-        ];
-
-
-	const nftCreate = await new TokenCreateTransaction()
-		.setTokenName("WAKA Football")
-		.setTokenSymbol("footbool")
-        .setTokenType(TokenType.NonFungibleUnique)
+const supplyKey = PrivateKey.generate();
+let CID = [""]
+async function main() {
+	//Create the NFT
+	let nftCreate = await new TokenCreateTransaction()
+		.setTokenName("football_messi")
+		.setTokenSymbol("GRAD")
+		.setTokenType(TokenType.NonFungibleUnique)
 		.setDecimals(0)
 		.setInitialSupply(0)
-        .setSupplyType(TokenSupplyType.Finite)
-        .setMaxSupply(CID.length)
-        .setCustomFees([nftCustomFee])
+		.setTreasuryAccountId(treasuryId)
+		.setSupplyType(TokenSupplyType.Finite)
+		.setMaxSupply(250)
 		.setSupplyKey(supplyKey)
-		.setTreasuryAccountId(accountId)
-		.setAutoRenewAccountId(accountId)
-		.setAutoRenewPeriod(7776000)
-		.freezeWithSigner(signer)
-        
-		// .setAdminKey(adminKey)
-		// .setFreezeKey(freezeKey)
-		// .setWipeKey(wipeKey)
-		// .freezeWith(accountId)
-		// .sign(signer);
+		.freezeWith(client);
 
-        let nftCreateTxSign = await nftCreate.sign(adminKey);
-	    let nftCreateSubmit = await nftCreateTxSign.execute(signer);
-	    let nftCreateRx = await nftCreateSubmit.getReceipt(signer);
-	    let tokenId = nftCreateRx.tokenId;
-	    console.log(`Created NFT with Token ID: ${tokenId} \n`);
-        // const tokenCreateSubmit = await nftCreate.executeWithSigner(signer);
-        // const tokenCreateRx = await provider.getTransactionReceipt(tokenCreateSubmit.transactionId);
-        // const ntId = tokenCreateRx.tokenId;
-        const nsupply = nftCreate._initialSupply.low;
-        // console.log(`- Created NHTS token with ID: ${ntId}`);
-    
-        // return [ntId, nsupply, tokenCreateSubmit.transactionId];
-        return [tokenId, nsupply,nftCreateRx];
+	//Sign the transaction with the treasury key
+	let nftCreateTxSign = await nftCreate.sign(treasuryKey);
+
+	//Submit the transaction to a Hedera network
+	let nftCreateSubmit = await nftCreateTxSign.execute(client);
+
+	//Get the transaction receipt
+	let nftCreateRx = await nftCreateSubmit.getReceipt(client);
+
+	//Get the token ID
+	let tokenId = nftCreateRx.tokenId;
+
+	//Log the token ID
+	console.log(`- Created NFT with Token ID: ${tokenId} \n`);
+
+	//IPFS content identifiers for which we will create a NFT
+	CID = ["Qmf4LjUYuBPTtSHanL2rAJahuwksyqYD6NvJTZcsXoZPR4"];
+
+	// Mint new NFT
+	let mintTx = await new TokenMintTransaction()
+		.setTokenId(tokenId)
+		.setMetadata([Buffer.from(CID)])
+		.freezeWith(client);
+
+	//Sign the transaction with the supply key
+	let mintTxSign = await mintTx.sign(supplyKey);
+
+	//Submit the transaction to a Hedera network
+	let mintTxSubmit = await mintTxSign.execute(client);
+
+	//Get the transaction receipt
+	let mintRx = await mintTxSubmit.getReceipt(client);
+
+	//Log the serial number
+	console.log(`- Created NFT ${tokenId} with serial: ${mintRx.serials[0].low} \n`);
+	
+	//Create the associate transaction and sign with Alice's key 
+	let associateAliceTx = await new TokenAssociateTransaction()
+		.setAccountId(aliceId)
+		.setTokenIds([tokenId])
+		.freezeWith(client)
+		.sign(aliceKey);
+
+	//Submit the transaction to a Hedera network
+	let associateAliceTxSubmit = await associateAliceTx.execute(client);
+
+	//Get the transaction receipt
+	let associateAliceRx = await associateAliceTxSubmit.getReceipt(client);
+
+	//Confirm the transaction was successful
+	console.log(`- NFT association with Alice's account: ${associateAliceRx.status}\n`);
+
+
+// 	// Check the balance before the transfer for the treasury account
+// 	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
+// 	console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+
+// 	// Check the balance before the transfer for Alice's account
+// 	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
+// 	console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+
+// 	// Transfer the NFT from treasury to Alice
+// 	// Sign with the treasury key to authorize the transfer
+// 	let tokenTransferTx = await new TransferTransaction()
+// 		.addNftTransfer(tokenId, 1, treasuryId, aliceId)
+// 		.freezeWith(client)
+// 		.sign(treasuryKey);
+
+// 	let tokenTransferSubmit = await tokenTransferTx.execute(client);
+// 	let tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
+
+// 	console.log(`\n- NFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
+
+// 	// Check the balance of the treasury account after the transfer
+// 	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(treasuryId).execute(client);
+// 	console.log(`- Treasury balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
+
+// 	// Check the balance of Alice's account after the transfer
+// 	var balanceCheckTx = await new AccountBalanceQuery().setAccountId(aliceId).execute(client);
+// 	console.log(`- Alice's balance: ${balanceCheckTx.tokens._map.get(tokenId.toString())} NFTs of ID ${tokenId}`);
 }
-
-export default nfttokenCreateFcn;
+export default main;

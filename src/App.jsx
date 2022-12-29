@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import MyGroup from "./components/MyGroup.jsx";
 import walletConnectFcn from "./components/hedera/walletConnect.js";
 import tokenCreateFcn from "./components/hedera/tokenCreate.js";
-import nfttokenCreateFcn from "./components/hedera/nftCreate.js";
+// ......
+// import main from "./components/hedera/nftCreate.js";
 import tokenMintFcn from "./components/hedera/tokenMint.js";
 import contractDeployFcn from "./components/hedera/contractDeploy.js";
 import contractExecuteFcn from "./components/hedera/contractExecute.js";
@@ -15,6 +16,7 @@ function App() {
   const [nfttokenId, setnftTokenId] = useState();
 
   const [tokenSupply, setTokenSupply] = useState();
+  const [nfttokenSupply, setnftTokenSupply] = useState();
   const [contractId, setContractId] = useState();
 
   const [connectTextSt, setConnectTextSt] = useState("🔌 Connect here...");
@@ -91,38 +93,34 @@ function App() {
     }
   }
 
-// Nft minting
-async function nftMintcall() {
-	if (nfttokenId !== undefined) {
-		setnftTextSt(`You already have NFTtoken ${nfttokenId} ✅`);
-	  } else if (accountId === undefined) {
-		setnftTextSt(`🛑 Connect a wallet first! 🛑`);
-	  }else{
-		const [nftId, supply, txIdRaw] = await nfttokenCreateFcn(
-			walletData,
-			accountId
-		  );
-		  setnftTokenId(nftId);
-		  setTokenSupply(supply);
-		  setnftTextSt(`Successfully created NFTtoken with ID: ${nftId} ✅`);
-		  setnftTextSt();
-		  setContractTextSt();
-		  setTransferTextSt();
-		  const txId = prettify(txIdRaw);
-		  setnftLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
-
-
-
-
-
-
-
-
-	  }
+// Nft createing
+// async function nftCreate() {
+//   if (nfttokenId !== undefined) {
+//     setnftTextSt(`You already have NFT ${nfttokenId} ✅`);
+//   } else if (accountId === undefined) {
+//     setnftTextSt(`🛑 Connect a wallet first! 🛑`);
+//   } else {
+//     const [nftId, nftsupply, ntxIdRaw] = await nfttokenCreateFunction(
+//       walletData,
+//       accountId
+//     );
+//     setnftTokenId(nftId);
+//     setnftTokenSupply(nftsupply);
+//     setnftTextSt(`Successfully created NFT with ID: ${tId} ✅`);
+//     setnftTextSt();
+//     setContractTextSt();
+//     setTransferTextSt();
+//     const ntxId = prettify(ntxIdRaw);
+//     setnftLinkSt(`https://hashscan.io/#/testnet/transaction/${ntxId}`);
+//   }
+     
 	
-  }
+//   }
+// associate nft
+// async function Addnft() {
+//   console.log("  associate nft")
 
-
+// }
 
 
 
@@ -193,18 +191,18 @@ async function nftMintcall() {
         link={mintLinkSt}
       />
       {/* working on tokenmint */}
-	  {/* <MyGroup
-        fcn={nftMintcall}
+	   <MyGroup
+        // fcn={main}
         buttonLabel={"Create NFT"}
-        text={nftTextSt}
-        link={nftLinkSt}
-      /> */}
-	  {/* <MyGroup
-        // fcn={nftMintcall}
+        // text={nftTextSt}
+        // link={nftLinkSt}
+      /> 
+	    <MyGroup
+        // fcn={Addnft}
         buttonLabel={"Associate NFT"}
-        text={nftTextSt}
-        link={nftLinkSt}
-      /> */}
+        // text={nftTextSt}
+        // link={nftLinkSt}
+      /> 
 
 
 

@@ -15,7 +15,7 @@ async function tokenCreateFcn(walletData, accountId) {
 
 	const tokenCreateTx = await new TokenCreateTransaction()
 		.setTokenName("Oneto11_vishal")
-		.setTokenSymbol("DDt")
+		.setTokenSymbol("wisdom")
 		.setTreasuryAccountId(accountId)
 		.setAutoRenewAccountId(accountId)
 		.setAutoRenewPeriod(7776000)
@@ -28,7 +28,7 @@ async function tokenCreateFcn(walletData, accountId) {
 	const tId = tokenCreateRx.tokenId;
 	const supply = tokenCreateTx._initialSupply.low;
 	console.log(`- Created HTS token with ID: ${tId}`);
-
+	console.log(tokenCreateSubmit)
 	return [tId, supply, tokenCreateSubmit.transactionId];
 }
 
