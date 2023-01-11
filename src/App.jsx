@@ -2,34 +2,33 @@ import React, { useState } from "react";
 import MyGroup from "./components/MyGroup.jsx";
 import walletConnectFcn from "./components/hedera/walletConnect.js";
 import tokenCreateFcn from "./components/hedera/tokenCreate.js";
-// ......
-// import main from "./components/hedera/nftCreate.js";
+import assotoken from "./components/hedera/AssociateToken.js";
 import tokenMintFcn from "./components/hedera/tokenMint.js";
 import contractDeployFcn from "./components/hedera/contractDeploy.js";
 import contractExecuteFcn from "./components/hedera/contractExecute.js";
+import tokenTransferfcn from "./components/hedera/buythenft.js";
 import "./styles/App.css";
 
 function App() {
   const [walletData, setWalletData] = useState();
   const [accountId, setAccountId] = useState();
   const [tokenId, setTokenId] = useState();
-  const [nfttokenId, setnftTokenId] = useState();
 
   const [tokenSupply, setTokenSupply] = useState();
-  const [nfttokenSupply, setnftTokenSupply] = useState();
   const [contractId, setContractId] = useState();
 
   const [connectTextSt, setConnectTextSt] = useState("🔌 Connect here...");
   const [createTextSt, setCreateTextSt] = useState("");
   const [mintTextSt, setMintTextSt] = useState("");
-  const [nftTextSt, setnftTextSt] = useState("");
+  const [nftTextSt,setnftTextSt] = useState("")
   const [contractTextSt, setContractTextSt] = useState();
   const [trasnferTextSt, setTransferTextSt] = useState();
 
   const [connectLinkSt, setConnectLinkSt] = useState("");
   const [createLinkSt, setCreateLinkSt] = useState("");
   const [mintLinkSt, setMintLinkSt] = useState("");
-  const [nftLinkSt, setnftLinkSt] = useState("");
+  const [nftLinkSt,setnftLinkst]=useState("")
+
 
   const [contractLinkSt, setContractLinkSt] = useState();
   const [trasnferLinkSt, setTransferLinkSt] = useState();
@@ -93,34 +92,58 @@ function App() {
     }
   }
 
-// Nft createing
-// async function nftCreate() {
-//   if (nfttokenId !== undefined) {
-//     setnftTextSt(`You already have NFT ${nfttokenId} ✅`);
-//   } else if (accountId === undefined) {
-//     setnftTextSt(`🛑 Connect a wallet first! 🛑`);
-//   } else {
-//     const [nftId, nftsupply, ntxIdRaw] = await nfttokenCreateFunction(
-//       walletData,
-//       accountId
-//     );
-//     setnftTokenId(nftId);
-//     setnftTokenSupply(nftsupply);
-//     setnftTextSt(`Successfully created NFT with ID: ${tId} ✅`);
-//     setnftTextSt();
-//     setContractTextSt();
-//     setTransferTextSt();
-//     const ntxId = prettify(ntxIdRaw);
-//     setnftLinkSt(`https://hashscan.io/#/testnet/transaction/${ntxId}`);
-//   }
-     
-	
-//   }
-// associate nft
-// async function Addnft() {
-//   console.log("  associate nft")
 
-// }
+  async function asstoken() {
+
+    const [supply, txIdRaw] = await assotoken(
+      walletData,
+      accountId,
+    // tokenId
+    );
+    setTokenSupply(supply);
+    setMintTextSt(`Supply of token ${tokenId} is ${supply}! ✅`);
+    const txId = prettify(txIdRaw);
+    setMintLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
+      
+    // if (tokenId === undefined) {
+    //   setnftTextSt("🛑 Create a token first! 🛑");
+    // } else {
+      
+    //   const [supply, txIdRaw] = await assotoken(
+    //     walletData,
+    //     accountId,
+    //     tokenId
+    //   );
+    //   setTokenSupply(supply);
+    //   setMintTextSt(`Supply of token ${tokenId} is ${supply}! ✅`);
+    //   const txId = prettify(txIdRaw);
+    //   setMintLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
+    // }
+  }
+
+
+  async function tokenTransfer() {
+    
+      const [tId, supply, txIdRaw] = await tokenTransferfcn(
+        walletData,
+        accountId
+      );
+      setTokenId(tId);
+      setTokenSupply(supply);
+      setCreateTextSt(`Successfully transfer nft with ID: ${tId} ✅`);
+      setMintTextSt();
+      setContractTextSt();
+      setTransferTextSt();
+      const txId = prettify(txIdRaw);
+      setCreateLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
+    
+
+    
+  }
+
+
+
+
 
 
 
@@ -177,50 +200,69 @@ function App() {
         link={connectLinkSt}
       />
 
-      <MyGroup
+      {/* <MyGroup
         fcn={tokenCreate}
         buttonLabel={"Create New Token"}
         text={createTextSt}
         link={createLinkSt}
-      />
-
-      <MyGroup
+      />  */}
+{/*  
+      {/* <MyGroup
         fcn={tokenMint}
         buttonLabel={"Mint 10 New Tokens"}
         text={mintTextSt}
         link={mintLinkSt}
-      />
+      /> */}
       {/* working on tokenmint */}
-	   <MyGroup
+	   {/* <MyGroup
         // fcn={main}
         buttonLabel={"Create NFT"}
         // text={nftTextSt}
         // link={nftLinkSt}
-      /> 
-	    <MyGroup
+      />  */}
+	    {/* <MyGroup
         // fcn={Addnft}
         buttonLabel={"Associate NFT"}
         // text={nftTextSt}
         // link={nftLinkSt}
+      />  */}
+  {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
+  ``<MyGroup
+        fcn={asstoken}
+        buttonLabel={"Associate Token"}
+        text={nftTextSt}
+        link={nftLinkSt}
+      /> 
+
+  <MyGroup
+        fcn={tokenTransfer}
+        buttonLabel={"Buy NFT"}
+        text={createTextSt}
+        link={createLinkSt}
       /> 
 
 
 
 
+
+  {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
+
+
+
 	{/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
-      <MyGroup
+      {/* <MyGroup
         fcn={contractDeploy}
         buttonLabel={"Deploy Contract"}
         text={contractTextSt}
         link={contractLinkSt}
-      />
+      /> */}
 
-      <MyGroup
-        fcn={contractExecute}
-        buttonLabel={"Transfer Tokens"}
+      {/* <MyGroup
+        fcn={tokenTransfer}
+        // buttonLabel={"BUY NFT"}
         text={trasnferTextSt}
         link={trasnferLinkSt}
-      />
+      /> */}
       <div className="logo">
         <div className="symbol">
           <svg

@@ -8,14 +8,15 @@ async function tokenCreateFcn(walletData, accountId) {
 	const saveData = walletData[1];
 	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
 	const signer = hashconnect.getSigner(provider);
-
+	console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",accountId)
 	const url = `https://testnet.mirrornode.hedera.com/api/v1/accounts?account.id=${accountId}`;
+	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",url)
 	const mirrorQuery = await axios(url);
 	const supplyKey = PublicKey.fromString(mirrorQuery.data.accounts[0].key.key);
-
+	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++$$$$$$$$$",supplyKey)
 	const tokenCreateTx = await new TokenCreateTransaction()
-		.setTokenName("Oneto11_vishal")
-		.setTokenSymbol("wisdom")
+		.setTokenName("SalmanKahan")
+		.setTokenSymbol("actor")
 		.setTreasuryAccountId(accountId)
 		.setAutoRenewAccountId(accountId)
 		.setAutoRenewPeriod(7776000)
@@ -29,6 +30,7 @@ async function tokenCreateFcn(walletData, accountId) {
 	const supply = tokenCreateTx._initialSupply.low;
 	console.log(`- Created HTS token with ID: ${tId}`);
 	console.log(tokenCreateSubmit)
+	console.log(tokenCreateTx)
 	return [tId, supply, tokenCreateSubmit.transactionId];
 }
 
