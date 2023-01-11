@@ -124,18 +124,18 @@ function App() {
 
   async function tokenTransfer() {
     
-      const [tId, supply, txIdRaw] = await tokenTransferfcn(
+      const [] = await tokenTransferfcn(
         walletData,
         accountId
       );
-      setTokenId(tId);
-      setTokenSupply(supply);
-      setCreateTextSt(`Successfully transfer nft with ID: ${tId} ✅`);
-      setMintTextSt();
-      setContractTextSt();
-      setTransferTextSt();
-      const txId = prettify(txIdRaw);
-      setCreateLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
+      // setTokenId(tId);
+      // setTokenSupply(supply);
+      // setCreateTextSt(`Successfully transfer nft with ID: ${tId} ✅`);
+      // setMintTextSt();
+      // setContractTextSt();
+      // setTransferTextSt();
+      // const txId = prettify(txIdRaw);
+      // setCreateLinkSt(`https://hashscan.io/#/testnet/transaction/${txId}`);
     
 
     
@@ -169,6 +169,8 @@ function App() {
   }
 
   async function contractExecute() {
+    tokenId = 1
+    contractId=1
     if (tokenId === undefined || contractId === undefined) {
       setTransferTextSt("🛑 Create a token AND deploy a contract first! 🛑");
     } else {
@@ -255,7 +257,7 @@ function App() {
         buttonLabel={"Deploy Contract"}
         text={contractTextSt}
         link={contractLinkSt}
-      /> */}
+      />  */}
 
       {/* <MyGroup
         fcn={tokenTransfer}

@@ -1,5 +1,4 @@
-import axios from "axios";
-import { TokenCreateTransaction, PublicKey,TransferTransaction } from "@hashgraph/sdk";
+import { TransferTransaction ,AccountId,PrivateKey,Client} from "@hashgraph/sdk";
 
 async function tokenTransferfcn(walletData, accountId) {
 	console.log(`\n=======================================`);
@@ -8,12 +7,16 @@ async function tokenTransferfcn(walletData, accountId) {
 	const saveData = walletData[1];
 	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
 	const signer = hashconnect.getSigner(provider);
+	console.log("Start********************************************************************************")
 //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const tokenId = "0.0.49264664"
-    const treasuryId="0.0.48939753"
-    const aliceId ="0.0.49161691"
-
-
+	console.log("Start*********************************2***********************************************")
+    const treasuryId=AccountId.fromString(process.env.OPERATOR_ID);
+	console.log("Start*********************************2***********************************************")
+    const aliceId =AccountId.fromString(process.env.ALICE_ID);
+    const treasuryKey=PrivateKey.fromStringECDSA(process.env.OPERATOR_PVKEY);
+    
+    const client = Client.forTestnet().setOperator(treasuryId, treasuryKey);
 
 
 
@@ -22,16 +25,14 @@ async function tokenTransferfcn(walletData, accountId) {
 // working on buying nft
 
 
-
+	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     let tokenTransferTx = await new TransferTransaction()
 	.addNftTransfer(tokenId, 1, treasuryId, aliceId)
-    .addHbarTransfer(treasuryId,100)
-    .addHbarTransfer(aliceId,-100)
-	// .freezeWith(client)
-    .freezeWithSigner(signer)
-    .signWithSigner(signer);
-	// .sign(treasuryKey);
-
+    
+	.freeze(client)
+   
+	.sign(treasuryKey);
+    console.log(tokenTransferTx)
     let tokenTransferSubmit = await tokenTransferTx.executeWithSigner(signer);
     let tokenTransferRx = await tokenTransferSubmit.getReceiptWithSigner(signer);
 
@@ -83,7 +84,7 @@ async function tokenTransferfcn(walletData, accountId) {
 	// console.log(tokenCreateSubmit)
 	// console.log(tokenCreateTx)
 	// return [tId, supply, tokenCreateSubmit.transactionId];
-	return [1,1,1];
+	// return [1,1,1];
 }
 
 export default tokenTransferfcn;
