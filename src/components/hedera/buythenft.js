@@ -12,7 +12,7 @@ async function tokenTransferfcn(walletData, accountId,Tid,Tkey,Aid) {
 	console.log(Aid)
 	console.log("Start********************************************************************************")
 //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    const tokenId = "0.0.49307494"
+    const tokenId = "0.0.49311284"
 	console.log("Start*********************************2***********************************************")
     const treasuryId=AccountId.fromString(Tid);
 	console.log("Start*********************************3***********************************************")

@@ -135,6 +135,7 @@ function App() {
         Aid
 
       );
+      setConnectTextSt(`🔌 NFt transfer ⚡ ✅`);
       // setTokenId(tId);
       // setTokenSupply(supply);
       // setCreateTextSt(`Successfully transfer nft with ID: ${tId} ✅`);
