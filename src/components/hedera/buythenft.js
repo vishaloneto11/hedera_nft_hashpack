@@ -1,20 +1,23 @@
 import { TransferTransaction ,AccountId,PrivateKey,Client} from "@hashgraph/sdk";
 
-async function tokenTransferfcn(walletData, accountId) {
+async function tokenTransferfcn(walletData, accountId,Tid,Tkey,Aid) {
 	console.log(`\n=======================================`);
 	console.log(`- Creating HTS token...`)
 	const hashconnect = walletData[0];
 	const saveData = walletData[1];
 	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
 	const signer = hashconnect.getSigner(provider);
+	console.log(Tid)
+	console.log(Tkey)
+	console.log(Aid)
 	console.log("Start********************************************************************************")
 //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    const tokenId = "0.0.49264664"
+    const tokenId = "0.0.49307494"
 	console.log("Start*********************************2***********************************************")
-    const treasuryId=AccountId.fromString(process.env.OPERATOR_ID);
-	console.log("Start*********************************2***********************************************")
-    const aliceId =AccountId.fromString(process.env.ALICE_ID);
-    const treasuryKey=PrivateKey.fromStringECDSA(process.env.OPERATOR_PVKEY);
+    const treasuryId=AccountId.fromString(Tid);
+	console.log("Start*********************************3***********************************************")
+    const aliceId =AccountId.fromString(Aid);
+    const treasuryKey=PrivateKey.fromStringECDSA(Tkey);
     
     const client = Client.forTestnet().setOperator(treasuryId, treasuryKey);
 
@@ -28,16 +31,27 @@ async function tokenTransferfcn(walletData, accountId) {
 	console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     let tokenTransferTx = await new TransferTransaction()
 	.addNftTransfer(tokenId, 1, treasuryId, aliceId)
-    
-	.freeze(client)
-   
-	.sign(treasuryKey);
+    .freezeWith(client)
+    .sign(treasuryKey);
     console.log(tokenTransferTx)
-    let tokenTransferSubmit = await tokenTransferTx.executeWithSigner(signer);
-    let tokenTransferRx = await tokenTransferSubmit.getReceiptWithSigner(signer);
+
+	let tokenTransferSubmit = await tokenTransferTx.execute(client);
+	let tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
+
+	console.log(`\n- NFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
 
 
-    console.log(`\n- NFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
+
+
+
+
+
+	// ______________________________________________________________________
+    // let tokenTransferSubmit = await tokenTransferTx.executeWithSigner(signer);
+    // let tokenTransferRx = await tokenTransferSubmit.getReceiptWithSigner(signer);
+
+
+    // console.log(`\n- NFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);
 
 
 

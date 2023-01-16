@@ -123,10 +123,17 @@ function App() {
 
 
   async function tokenTransfer() {
-    
+      const Tid = process.env.REACT_APP_OPERATOR_ID
+      const Tkey = process.env.REACT_APP_OPERATOR_PVKEY
+      const Aid = process.env.REACT_APP_ALICE_ID
+     
       const [] = await tokenTransferfcn(
         walletData,
-        accountId
+        accountId,
+        Tid,
+        Tkey,
+        Aid
+
       );
       // setTokenId(tId);
       // setTokenSupply(supply);
