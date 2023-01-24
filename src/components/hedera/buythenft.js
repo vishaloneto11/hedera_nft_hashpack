@@ -7,7 +7,7 @@ async function tokenTransferfcn(walletData, accountId,Tid,Tkey,Aid) {
 	const saveData = walletData[1];
 	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
 	const signer = hashconnect.getSigner(provider);
-    const tokenId = "0.0.49398806"
+    const tokenId = "0.0.49398897"
     const treasuryId=AccountId.fromString(Tid);
     const aliceId =AccountId.fromString(accountId);
     const treasuryKey=PrivateKey.fromStringECDSA(Tkey);
