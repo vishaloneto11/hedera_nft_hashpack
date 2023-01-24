@@ -7,19 +7,29 @@ async function tokenTransferfcn(walletData, accountId,Tid,Tkey,Aid) {
 	const saveData = walletData[1];
 	const provider = hashconnect.getProvider("testnet", saveData.topic, accountId);
 	const signer = hashconnect.getSigner(provider);
-    const tokenId = "0.0.49392642"
+    const tokenId = "0.0.49398806"
     const treasuryId=AccountId.fromString(Tid);
     const aliceId =AccountId.fromString(accountId);
     const treasuryKey=PrivateKey.fromStringECDSA(Tkey);
    
     const client = Client.forTestnet().setOperator(treasuryId, treasuryKey);
     
+
+
+
+
+
+
+
+
+
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	let tokenTransferTx = await new TransferTransaction()
 	.addNftTransfer(tokenId, 1, treasuryId, aliceId)
-	.addHbarTransfer(aliceId, -50)
-	.addHbarTransfer(treasuryId, 50)
-	.freezeWithSigner(signer)
+	.addHbarTransfer(AccountId.fromString(accountId), -2)
+	.addHbarTransfer(AccountId.fromString(treasuryId), 2)
+	.freezeWith(client)
+    .sign(treasuryKey)
 	
     // ################################################
     console.log(tokenTransferTx)
@@ -35,15 +45,15 @@ async function tokenTransferfcn(walletData, accountId,Tid,Tkey,Aid) {
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-    // let tokenTransferTx = await new TransferTransaction()
+    // let tokenT = await new TransferTransaction()
 	// .addNftTransfer(tokenId, 1, treasuryId, aliceId)
 	
     // .freezeWith(client)
     // .sign(treasuryKey)
     
-    // console.log(tokenTransferTx)
+    // console.log(tokenT)
 	
-	// let tokenTransferSubmit = await tokenTransferTx.execute(client);
+	// let tokenTransferSubmit = await tokenT.execute(client);
 	// let tokenTransferRx = await tokenTransferSubmit.getReceipt(client);
 
 	// console.log(`\n- NFT transfer from Treasury to Alice: ${tokenTransferRx.status} \n`);

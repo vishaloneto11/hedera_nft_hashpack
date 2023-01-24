@@ -9,7 +9,7 @@ async function assotoken(walletData, accountId) {
 	const url = `https://testnet.mirrornode.hedera.com/api/v1/accounts?account.id=${accountId}`;
 	const mirrorQuery = await axios(url);
 	const supplyKey = PublicKey.fromString(mirrorQuery.data.accounts[0].key.key);
-    const tokenId = "0.0.49392642"
+    const tokenId = "0.0.49398806"
 
     const transaction = await new TokenAssociateTransaction()
             .setAccountId(accountId)
